@@ -1,0 +1,78 @@
+---
+title: "Bellabeat's Cleaning Change Log"
+author: "Brendan Kappler"
+date: "2023-10-18"
+output: html_document
+knitr::opts_chunk:
+  echo: TRUE  # This line specifies that R code chunks should be echoed in the document
+---
+
+### 1. Data Preparation
+
+#### Make a Copy of Original Data Files
+
+- **Actions Taken:**
+  - Created backup copies of the original data files.
+  - Renamed the data files for clarity and organization.
+
+- **Objective:**
+  - Ensure the preservation of the original data.
+
+- **Rationale:**
+  - The original data files were organized within folders indicating the period of time in which the data was recorded. However, within these folders, all the files shared identical names. To facilitate successful data import and merging, it was essential to provide distinct and descriptive names to each file that accurately reflected the data they contained. This organizational step ensures clarity and ease of use during the data analysis process.
+
+### 2. Merging Data
+
+#### Merge dailyActivity_merged raw files
+
+- **Actions Taken:**
+  - Combined the dailyActivity_merged files from "Fitabase Data 3.12.16-4.11.16" and "Fitabase Data 4.12.16-5.12.16" into a single dataframe.
+  - Included all values, including N/A.
+  
+- **Objective:**
+  - Prepare the data for analysis by ensuring missing values do not impact calculations.
+
+- **Rationale:**
+ - Combining the raw data files into a single dataframe was essential to create a comprehensive dataset for analysis. While merging, it was crucial to include all values, including those marked as N/A. The decision to retain N/A values ensures that no data points are lost during the merging process, maintaining data completeness and integrity for subsequent analyses. This step was taken to prevent any unexpected issues that might arise from missing values and to ensure the consistency and reliability of the dataset.
+  
+### 3. Data Cleaning
+
+#### Replace N/A Values with 0
+
+- **Actions Taken:**
+  - Replaced N/A values with 0.
+
+- **Objective:**
+  - Prepare the data for analysis by ensuring missing values do not impact calculations.
+
+- **Rationale:**
+ - Missing values (N/A) can occur for various reasons, such as data recording errors, technical issues, or participant non-compliance. To ensure the dataset's consistency and reliability, these N/A values were replaced with zeros. This practice helps prevent unexpected issues during analysis and ensures that calculations are not adversely affected by missing data points.
+
+- **Code Used:**
+  ```R
+  dailyActivity[is.na(dailyActivity)] <- 0
+  ```
+  
+### Identify and Remove Participants with Fewer than 30 Data Points
+
+#### Actions Taken:
+
+- Retrieved the unique IDs and their frequency counts in the dataset.
+- Identified that there are 35 unique IDs in total.
+- Observed that only two of them had a frequency of less than 30, which is the number of days in both of the study months.
+- Removed IDs 2891001357 & 6391747486 as the former had only 8 entries and the latter had 9 entries.
+
+#### Objective:
+
+- Validate the dataset for the minimum required sample size (at least 30 data points) for statistical analysis.
+
+#### Rationale:
+
+- To ensure the dataset's reliability and statistical significance, it's essential to exclude entries with fewer than 30 data points. A sample size of 30 or more is considered statistically robust, where the average result of a sample begins to represent the average result of a population. This practice is based on well-established statistical principles and enhances the validity of subsequent analyses.
+
+#### Code Used:
+
+```R
+dailyActivity <- dailyActivity %>%
+  filter(Id != 2891001357, Id != 6391747486)
+```
